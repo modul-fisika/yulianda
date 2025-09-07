@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .radio-cell {
+            text-align: center;
+        }
+        /* Menyembunyikan radio button asli */
+        input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        /* Membuat tampilan custom checkbox */
+        input[type="radio"] + label {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #cbd5e1;
+            background-color: #f8fafc;
+            cursor: pointer;
+            vertical-align: middle;
+            position: relative;
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
+        }
+        /* Tampilan centang saat radio button terpilih */
+        input[type="radio"]:checked + label {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+        }
+        input[type="radio"]:checked + label:after {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 3px;
+            width: 6px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            transform: rotate(45deg);
+        }
+        input[type="radio"]:focus + label {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+        .feedback {
+            display: none;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0.5rem;
+        }
+        .correct {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .incorrect {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 sm:p-8 flex justify-center items-center min-h-screen">
+    <div class="bg-white p-6 sm:p-10 rounded-xl shadow-lg w-full max-w-4xl">
+        
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse rounded-lg overflow-hidden">
+                <thead class="bg-blue-500 text-white">
+                    <tr class="rounded-t-lg">
+                        <th class="p-4 text-left">Pernyataan</th>
+                        <th class="p-4 w-24">Benar</th>
+                        <th class="p-4 w-24">Salah</th>
+                        <th class="p-4 w-24">Tidak Tahu</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white text-gray-700">
+                    <tr>
+                        <td class="p-4 border border-gray-200">Tekanan air meningkat seiring bertambahnya kedalaman, sehingga menekan gendang telinga lebih kuat.</td>
+                        <td class="radio-cell p-4 border border-gray-200">
+                            <input type="radio" id="q1_true" name="q1" value="true">
+                            <label for="q1_true"></label>
+                        </td>
+                        <td class="radio-cell p-4 border border-gray-200">
+                            <input type="radio" id="q1_false" name="q1" value="false">
+                            <label for="q1_false"></label>
+                        </td>
+                        <td class="radio-cell p-4 border border-gray-200">
+                            <input type="radio" id="q1_unknown" name="q1" value="unknown">
+                            <label for="q1_unknown"></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-4 border border-gray-200">Tekanan yang lebih besar membuat volume udara di dalam rongga telinga mengecil (sesuai hukum fisika fluida).</td>
+                        <td class="radio-cell p-4 border border-gray-200">
+                            <input type="radio" id="q2_true" name="q2" value="true">
+                            <label for="q2_true"></label>
+                        </td>
+                        <td class="radio-cell p-4 border border-gray-200">
+                            <input type="radio" id="q2_false" name="q2" value="false">
+                            <label for="q2_false"></label>
+                        </td>
+                        <td class="radio-cell p-4 border border-gray-200">
+                            <input type="radio" id="q2_unknown" name="q2" value="unknown">
+                            <label for="q2_unknown"></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-4 border border-gray-200">Semakin dalam menyelam, massa jenis air bertambah sehingga menekan telinga lebih kuat.</td>
+                        <td class="radio-cell p-4 border border-gray-200">
+                            <input type="radio" id="q3_true" name="q3" value="true">
+                            <label for="q3_true"></label>
+                        </td>
+                        <td class="radio-cell p-4 border border-gray-200">
+                            <input type="radio" id="q3_false" name="q3" value="false">
+                            <label for="q3_false"></label>
+                        </td>
+                        <td class="radio-cell p-4 border border-gray-200">
+                            <input type="radio" id="q3_unknown" name="q3" value="unknown">
+                            <label for="q3_unknown"></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-4 border border-gray-200">Rasa sakit di telinga muncul karena terdapat suhu air yang semakin dingin di kedalaman.</td>
+                        <td class="radio-cell p-4 border border-gray-200">
+                            <input type="radio" id="q4_true" name="q4" value="true">
+                            <label for="q4_true"></label>
+                        </td>
+                        <td class="radio-cell p-4 border border-gray-200">
+                            <input type="radio" id="q4_false" name="q4" value="false">
+                            <label for="q4_false"></label>
+                        </td>
+                        <td class="radio-cell p-4 border border-gray-200">
+                            <input type="radio" id="q4_unknown" name="q4" value="unknown">
+                            <label for="q4_unknown"></label>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-6 flex justify-center">
+            <button id="check-btn" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-blue-700 transition duration-300">
+                Periksa Jawaban
+            </button>
+        </div>
+
+        <div id="results" class="hidden mt-8">
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">Hasil Kuis</h2>
+            <div id="score-text" class="text-center font-semibold text-xl mb-4"></div>
+            <div id="q1_result" class="feedback"></div>
+            <div id="q2_result" class="feedback"></div>
+            <div id="q3_result" class="feedback"></div>
+            <div id="q4_result" class="feedback"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkBtn = document.getElementById('check-btn');
+            const resultsDiv = document.getElementById('results');
+            const scoreText = document.getElementById('score-text');
+
+            // Objek yang menyimpan jawaban yang benar
+            const correctAnswers = {
+                q1: 'true',
+                q2: 'true',
+                q3: 'false',
+                q4: 'false'
+            };
+
+            // Objek yang menyimpan penjelasan untuk setiap jawaban
+            const explanations = {
+                q1: 'Benar. Tekanan air meningkat secara linier dengan kedalaman. Hal ini menyebabkan tekanan di luar telinga lebih besar daripada tekanan di dalam rongga telinga, menekan gendang telinga dan menyebabkan rasa sakit.',
+                q2: 'Benar. Sesuai dengan Hukum Boyle, ketika tekanan meningkat, volume gas (dalam hal ini, udara di telinga) akan mengecil. Inilah alasan mengapa pernapasan dan keseimbangan tekanan penting saat menyelam.',
+                q3: 'Salah. Massa jenis air relatif konstan, tidak meningkat secara signifikan dengan kedalaman. Peningkatan tekanan disebabkan oleh berat kolom air di atas Anda.',
+                q4: 'Salah. Meskipun suhu air memang menurun, penyebab utama rasa sakit di telinga adalah perbedaan tekanan, bukan suhu.'
+            };
+
+            checkBtn.addEventListener('click', () => {
+                let score = 0;
+                let answeredAll = true;
+
+                // Loop melalui setiap pertanyaan untuk memeriksa jawaban
+                for (const q in correctAnswers) {
+                    const selected = document.querySelector(`input[name="${q}"]:checked`);
+                    const resultDiv = document.getElementById(`${q}_result`);
+                    const questionNumber = q.replace('q', '');
+
+                    if (!selected) {
+                        answeredAll = false;
+                        continue;
+                    }
+
+                    // Menghapus kelas hasil sebelumnya
+                    resultDiv.classList.remove('correct', 'incorrect');
+                    resultDiv.style.display = 'block';
+
+                    // Memeriksa apakah jawaban benar atau salah
+                    if (selected.value === correctAnswers[q]) {
+                        score++;
+                        resultDiv.classList.add('correct');
+                        resultDiv.innerHTML = `<span class="font-bold">Jawaban ${questionNumber} Benar!</span> ${explanations[q]}`;
+                    } else {
+                        resultDiv.classList.add('incorrect');
+                        if (selected.value === 'unknown') {
+                            resultDiv.innerHTML = `<span class="font-bold">Jawaban ${questionNumber} tidak tepat.</span> Jawaban yang benar adalah <span class="font-semibold">Benar/Salah</span>. ${explanations[q]}`;
+                        } else {
+                            resultDiv.innerHTML = `<span class="font-bold">Jawaban ${questionNumber} Salah.</span> ${explanations[q]}`;
+                        }
+                    }
+                }
+
+                // Menampilkan hasil kuis dan skor
+                if (answeredAll) {
+                    resultsDiv.classList.remove('hidden');
+                    scoreText.textContent = `Anda mendapatkan ${score} dari ${Object.keys(correctAnswers).length} poin.`;
+                } else {
+                    resultsDiv.classList.add('hidden');
+                    alert('Harap jawab semua pertanyaan sebelum memeriksa.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
