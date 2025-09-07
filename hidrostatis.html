@@ -213,7 +213,7 @@
                     } else {
                         resultDiv.classList.add('incorrect');
                         if (selected.value === 'unknown') {
-                            resultDiv.innerHTML = `<span class="font-bold">Jawaban ${questionNumber} tidak tepat.</span> Jawaban yang benar adalah <span class="font-semibold">Benar/Salah</span>. ${explanations[q]}`;
+                            resultDiv.innerHTML = `<span class="font-bold">Jawaban ${questionNumber} tidak tepat.</span> Jawaban yang benar adalah ${explanations[q]}`;
                         } else {
                             resultDiv.innerHTML = `<span class="font-bold">Jawaban ${questionNumber} Salah.</span> ${explanations[q]}`;
                         }
