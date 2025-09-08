@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glosarium Fluida Statis</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen">
+
+  <div class="w-full max-w-xl p-6 bg-white rounded-2xl shadow-lg">
+    <h1 class="text-2xl font-bold text-center mb-4">Glosarium Fluida Statis</h1>
+    <input 
+      id="searchInput" 
+      type="text" 
+      placeholder="Cari istilah (misal: hukum pascal)" 
+      class="w-full p-3 border rounded-xl mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+    />
+    <button 
+      onclick="searchDefinition()" 
+      class="w-full bg-blue-500 text-white p-3 rounded-xl hover:bg-blue-600"
+    >
+      Cari Definisi
+    </button>
+
+    <div id="result" class="mt-6 text-gray-700"></div>
+  </div>
+
+  <script>
+    async function searchDefinition() {
+      const query = document.getElementById("searchInput").value.trim();
+      const resultDiv = document.getElementById("result");
+
+      if (!query) {
+        resultDiv.innerHTML = "<p class='text-red-500'>Masukkan kata kunci terlebih dahulu.</p>";
+        return;
+      }
+
+      resultDiv.innerHTML = "<p class='italic text-gray-500'>Mencari definisi...</p>";
+
+      try {
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer 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" // ganti dengan API key OpenAI Anda
+          },
+          body: JSON.stringify({
+            model: "gpt-4o-mini", 
+            messages: [
+              {
+                role: "system", 
+                content: "Kamu adalah asisten fisika. Berikan definisi singkat dan jelas tentang istilah fluida statis."
+              },
+              {
+                role: "user", 
+                content: `Jelaskan istilah '${query}' dalam konteks fluida statis.`
+              }
+            ],
+            max_tokens: 150,
+            temperature: 0.4
+          })
+        });
+
+        const data = await response.json();
+        const answer = data.choices[0].message.content;
+        resultDiv.innerHTML = `<p><strong>${query}:</strong> ${answer}</p>`;
+
+      } catch (error) {
+        console.error(error);
+        resultDiv.innerHTML = "<p class='text-red-500'>Terjadi kesalahan saat memuat definisi.</p>";
+      }
+    }
+  </script>
+
+</body>
+</html>
