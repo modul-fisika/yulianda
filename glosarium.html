@@ -63,7 +63,7 @@
         });
 
         const data = await response.json();
-        const answer = data.choices[0].message.content;
+        const answer = data.choices[0]?.message?.content;
         resultDiv.innerHTML = `<p><strong>${query}:</strong> ${answer}</p>`;
 
       } catch (error) {
