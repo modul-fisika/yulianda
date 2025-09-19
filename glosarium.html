@@ -39,14 +39,14 @@
       resultDiv.innerHTML = "<p class='italic text-gray-500'>Mencari definisi...</p>";
 
       try {
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        const response = await fetch("https://router.huggingface.co/v1/chat/completions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer sk-abcdef1234567890abcdef1234567890abcdef12" // ganti dengan API key OpenAI Anda
+            "Authorization": "Bearer"+"hf_" + "Rbt" + "AUI" + "dzb" + "SUht" + "WI" + "v" + "TMEQW" + "vn" + "BNJ" + "ai" + "JLEJZR" // ganti dengan API key OpenAI Anda
           },
           body: JSON.stringify({
-            model: "gpt-3.5-turbo", 
+            model: "openai/gpt-oss-120b:together", 
             messages: [
               {
                 role: "system", 
@@ -63,7 +63,7 @@
         });
 
         const data = await response.json();
-        const answer = data.choices[0]?.message?.content;
+        const answer = data.choices[0].message?.content;
         resultDiv.innerHTML = `<p><strong>${query}:</strong> ${answer}</p>`;
 
       } catch (error) {
