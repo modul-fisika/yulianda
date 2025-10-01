@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Glosarium Fluida Statis</title>
+  <title>Glosarium Fluida Statis Terintegrasi AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 flex items-center justify-center min-h-screen">
 
   <div class="w-full max-w-xl p-6 bg-white rounded-2xl shadow-lg">
-    <h1 class="text-2xl font-bold text-center mb-4">Glosarium Fluida Statis</h1>
+    <h1 class="text-2xl font-bold text-center mb-4">Glosarium Fluida Statis Terintegrasi AI</h1>
     <input 
       id="searchInput" 
       type="text" 
@@ -50,21 +50,17 @@
             messages: [
               {
                 role: "system", 
-                content: "Kamu adalah asisten fisika. Berikan definisi singkat dan jelas tentang istilah fluida statis."
-              },
-              {
-                role: "user", 
-                content: `Jelaskan istilah '${query}' dalam konteks fluida statis.`
+                content: `Kamu adalah asisten fisika. Berikan definisi singkat dan jelas tentang istilah '${query}' fluida statis. jika menggunakan ** ganti dengan <b></b>`
               }
             ],
-            max_tokens: 150,
-            temperature: 0.4
+            max_tokens: 1500,
+            temperature: 1
           })
         });
 
         const data = await response.json();
         const answer = data.choices[0].message?.content;
-        resultDiv.innerHTML = `<p><strong>${query}:</strong> ${answer}</p>`;
+        resultDiv.innerHTML = `<p>${answer}</p>`;
 
       } catch (error) {
         console.error(error);
