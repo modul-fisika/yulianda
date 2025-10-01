@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refleksi Fisika: Tegangan Permukaan</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* CSS Styling dengan Tema Hijau */
+        mjx-container[jax="CHTML"][display="true"] {
+            display: contents !important;
+            text-align: justify !important;
+        }
+
+        :root {
+            --primary-color: #28a745; /* Hijau Utama */
+            --light-green: #e9f7ee; /* Hijau Muda untuk background */
+            --dark-green: #1e7e34; /* Hijau Tua untuk hover */
+            --text-color: #333;
+            --border-color: #c3e6cb;
+            --correct-color: #d4edda;
+            --wrong-color: #f8d7da;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-green);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .reflection-header {
+            text-align: center;
+            font-size: 1.2em;
+            font-style: italic;
+            color: var(--dark-green);
+            margin-bottom: 30px;
+            padding: 10px;
+            border: 1px dashed var(--primary-color);
+            border-radius: 8px;
+        }
+
+        .question-card {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .option-label {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            border: 1px solid #ddd;
+        }
+
+        .option-label:hover {
+            background-color: #e0f0e3;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+            accent-color: var(--primary-color);
+        }
+
+        #submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, opacity 0.3s, box-shadow 0.3s;
+            margin-top: 30px;
+            box-shadow: 0 4px 6px rgba(40, 167, 69, 0.4);
+        }
+
+        #submit-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+            box-shadow: none;
+        }
+
+        #submit-btn:not(:disabled):hover {
+            background-color: var(--dark-green);
+            box-shadow: 0 6px 8px rgba(30, 126, 52, 0.5);
+        }
+
+        #results {
+            margin-top: 30px;
+            padding: 20px 0;
+            border-top: 2px dashed var(--primary-color);
+        }
+
+        #score-output {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--dark-green);
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: var(--light-green);
+            border-radius: 8px;
+        }
+
+        .discussion-item {
+            margin-bottom: 30px;
+            padding: 15px;
+            border-left: 5px solid var(--primary-color);
+            background-color: #f0fff0;
+            border-radius: 6px;
+        }
+
+        .discussion-item h3 {
+            color: var(--dark-green);
+            margin-top: 0;
+            font-size: 1.25em;
+        }
+
+        .discussion-item p.pembahasan {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+        
+        /* MathJax styling for formulas */
+        .question-text, .pembahasan {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Refleksi Tegangan Permukaan</h1>
+
+        <form id="quiz-form">
+            <!-- Soal akan dimasukkan secara dinamis di sini -->
+        </form>
+
+        <button id="submit-btn" disabled>Kirim Jawaban dan Lihat Skor</button>
+
+        <div id="results" style="display: none;">
+            <h2>Hasil Refleksi</h2>
+            <div id="score-output"></div>
+            <h3>Pembahasan Setiap Soal</h3>
+            <div id="discussion-output"></div>
+        </div>
+    </div>
+
+    <script>
+        // Array Soal Refleksi - Tegangan Permukaan
+        const questions = [
+            {
+                question: "1. Di kampung Shella, anak-anak suka meniup gelembung menggunakan batang bambu kecil yang dicelupkan ke air sabun buatan sendiri. Mereka membuat bambu dengan bentuk bulat, persegi, bahkan segitiga. Tapi, anehnya, gelembung sabun yang keluar selalu berbentuk bulat, tidak peduli bentuk bambunya. Menurutmu, kenapa gelembung sabun tetap bulat meskipun alat tiupnya berbeda bentuk?",
+                options: [
+                    "Karena udara di dalam gelembung mengembang ke segala arah secara merata dan menghasilkan bentuk dengan luas permukaan terkecil, yaitu bola.",
+                    "Karena gaya gravitasi membuat gelembung sabun selalu membentuk bola.",
+                    "Karena bentuk alat tiup hanya berfungsi sebagai jalan masuk udara, tidak menentukan bentuk akhir gelembung.",
+                    "Karena gaya apung di udara memaksa gelembung menjadi bulat.",
+                    "Karena zat kimia pada sabun secara alami membulatkan udara di dalam gelembung."
+                ],
+                correctAnswerIndex: 0, // A
+                rationale: "Gelembung sabun selalu berbentuk bola karena sifat tegangan permukaan. Tegangan permukaan bekerja untuk meminimalkan energi, dan bentuk bola adalah konfigurasi yang memiliki luas permukaan terkecil untuk volume udara tertentu."
+            },
+            {
+                question: "2. Nanda meletakkan sebuah jarum logam sepanjang $$5 \\text{ cm}$$ dengan hati-hati di atas permukaan air dalam wadah. Terlihat permukaan air sedikit melengkung di sekitar jarum. Jika tegangan permukaan air adalah $$\\gamma = 0.075 \\text{ N/m}$$, berapakah gaya ($$F$$) yang bekerja pada jarum akibat tegangan permukaan tersebut?",
+                options: [
+                    "$$0.00075 \\text{ N}$$",
+                    "$$0.0075 \\text{ N}$$",
+                    "$$0.075 \\text{ N}$$",
+                    "$$0.75 \\text{ N}$$",
+                    "$$7.5 \\text{ N}$$"
+                ],
+                correctAnswerIndex: 1, // B
+                rationale: "Untuk benda padat yang ditopang oleh tegangan permukaan (seperti jarum yang mengapung), gaya totalnya adalah $$\\mathbf{F = 2\\gamma L}$$, karena jarum memiliki dua sisi kontak dengan air. Dengan $$\\gamma = 0.075 \\text{ N/m}$$ dan $$L = 0.05 \\text{ m}$$, maka $$F = 2 \\times 0.075 \\times 0.05 = 0.0075 \\text{ N}$$. "
+            },
+            {
+                question: "3. Muti meletakkan jarum pertama sepanjang $$L_1 = 5 \\text{ cm}$$ di atas permukaan air, dan jarum tersebut tidak tenggelam. Selanjutnya, ia meletakkan jarum kedua yang panjangnya tiga kali lipat dari jarum pertama ($$L_2 = 3L_1$$). Berapakah perbandingan Gaya Tegangan Permukaan ($$F$$) yang bekerja pada jarum pertama dan jarum kedua ($$F_1:F_2$$)?",
+                options: [
+                    "$$1 : 2$$",
+                    "$$2 : 1$$",
+                    "$$3 : 5$$",
+                    "$$1 : 3$$",
+                    "$$3 : 1$$"
+                ],
+                correctAnswerIndex: 3, // D
+                rationale: "Gaya Tegangan Permukaan berbanding lurus dengan panjang kontak ($$F = 2\\gamma L$$). Karena tegangan permukaan air ($$\\gamma$$) dan faktor dua ($$2$$) adalah sama, perbandingan gaya tegangan permukaan adalah sama dengan perbandingan panjang jarum: $$\\mathbf{F_1 : F_2 = L_1 : L_2}$$. Karena $$L_2 = 3L_1$$, maka perbandingannya adalah $$1:3$$."
+            },
+            {
+                question: "4. Abdul memiliki sebuah kawat melingkar berjari-jari $$7 \\text{ cm}$$. Kawat tersebut diletakkan di permukaan air dan tidak tenggelam. Kemudian Abdul meluruskan kawat tersebut dan meletakkannya kembali di atas permukaan air, ternyata kawat juga masih tetap tidak tenggelam. Pernyataan manakah yang benar sesuai informasi tersebut?",
+                options: [
+                    "Kawat tidak tenggelam karena tegangan permukaan air bekerja menahan kawat, baik berbentuk lingkaran maupun lurus.",
+                    "Kawat tidak tenggelam karena massa jenis kawat lebih kecil dari air.",
+                    "Kawat melingkar lebih mudah tenggelam dibandingkan kawat lurus karena luas lingkaran lebih besar.",
+                    "Kawat tetap mengapung karena ada gaya apung Archimedes yang bekerja lebih besar dari berat kawat.",
+                    "Kawat tidak tenggelam karena adanya gaya magnet bumi yang bekerja pada kawat."
+                ],
+                correctAnswerIndex: 0, // A
+                rationale: "Kawat logam (baja/besi) memiliki massa jenis lebih besar dari air, sehingga gaya apung Archimedes tidak cukup untuk menahannya. Kawat tersebut mengapung murni karena Tegangan Permukaan air, yang bertindak seperti selaput elastis yang menahan benda ringan di sepanjang garis kontak."
+            },
+            {
+                question: "5. Veren menjatuhkan jarum jahit ke dalam gelas air dan melihat jarum langsung tenggelam. Namun, ketika Veren meletakkan jarum yang sama secara hati-hati dan horizontal di permukaan air, kali ini jarum justru mengapung. Mengapa jarum bisa tenggelam dalam satu kondisi, tetapi bisa mengapung dalam kondisi lain?",
+                options: [
+                    "Karena massa jarum berubah saat disentuh tangan.",
+                    "Karena tegangan permukaan air menahan jarum jika permukaan tidak rusak, tapi jika permukaan terganggu jarum tenggelam.",
+                    "Karena air kadang lebih ringan sehingga jarum bisa terapung.",
+                    "Karena gaya apung air selalu lebih besar dari berat jarum.",
+                    "Karena jarum mengandung udara yang membuatnya lebih ringan."
+                ],
+                correctAnswerIndex: 1, // B
+                rationale: "Tegangan permukaan membutuhkan kontak yang utuh dan permukaan yang tidak terganggu untuk dapat menahan berat benda. Ketika jarum dijatuhkan, benturan merusak 'selaput' tegangan permukaan, menyebabkan gaya penahan hilang dan jarum tenggelam sesuai massa jenisnya. Ketika diletakkan perlahan, tegangan permukaan dapat bekerja efektif untuk menahan jarum."
+            }
+        ];
+
+        const form = document.getElementById('quiz-form');
+        const submitButton = document.getElementById('submit-btn');
+        const resultsDiv = document.getElementById('results');
+        const scoreOutput = document.getElementById('score-output');
+        const discussionOutput = document.getElementById('discussion-output');
+
+        // Fungsi untuk merender semua soal
+        function renderQuiz() {
+            form.innerHTML = questions.map((q, qIndex) => {
+                const optionsHtml = q.options.map((option, oIndex) => `
+                    <label class="option-label">
+                        <input type="radio" name="question-${qIndex}" value="${oIndex}" onchange="checkCompletion()">
+                        ${String.fromCharCode(65 + oIndex)}. ${option}
+                    </label>
+                `).join('');
+
+                return `
+                    <div class="question-card" id="q-${qIndex}">
+                        <div class="question-text">${q.question}</div>
+                        <div class="options">${optionsHtml}</div>
+                    </div>
+                `;
+            }).join('');
+             // Re-render MathJax after content injection
+             if (window.MathJax) {
+                 MathJax.typesetPromise();
+             }
+        }
+
+        // Fungsi untuk memeriksa kelengkapan jawaban dan mengaktifkan tombol submit
+        function checkCompletion() {
+            let answeredCount = 0;
+            questions.forEach((_, index) => {
+                if (document.querySelector(`input[name="question-${index}"]:checked`)) {
+                    answeredCount++;
+                }
+            });
+
+            if (answeredCount === questions.length) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+        
+        // Fungsi untuk mengkonversi nilai MathJax dan menampilkan hasil
+        async function displayResults() {
+            let score = 0;
+            let discussionHtml = '';
+
+            questions.forEach((q, qIndex) => {
+                const selectedOption = document.querySelector(`input[name="question-${qIndex}"]:checked`);
+                const questionCard = document.getElementById(`q-${qIndex}`);
+                let isCorrect = false;
+
+                if (selectedOption) {
+                    const selectedIndex = parseInt(selectedOption.value);
+                    if (selectedIndex === q.correctAnswerIndex) {
+                        score++;
+                        isCorrect = true;
+                    }
+
+                    // Highlight jawaban
+                    const allOptions = questionCard.querySelectorAll('.option-label');
+                    allOptions.forEach((label, oIndex) => {
+                        if (oIndex === q.correctAnswerIndex) {
+                            label.style.backgroundColor = 'var(--correct-color)'; // Warna benar
+                            label.style.fontWeight = 'bold';
+                        }
+                        if (oIndex === selectedIndex && !isCorrect) {
+                            label.style.backgroundColor = 'var(--wrong-color)'; // Warna salah
+                        }
+                    });
+
+                    // Matikan input setelah submit
+                    questionCard.querySelectorAll('input[type="radio"]').forEach(input => input.disabled = true);
+                }
+
+                // Siapkan pembahasan
+                const correctAnswerLetter = String.fromCharCode(65 + q.correctAnswerIndex);
+                const correctAnswerText = q.options[q.correctAnswerIndex];
+
+                discussionHtml += `
+                    <div class="discussion-item">
+                        <h3>Soal ${qIndex + 1}</h3>
+                        <p><strong>Jawaban Benar:</strong> (${correctAnswerLetter}) ${correctAnswerText}</p>
+                        <p><strong>Pembahasan:</strong></p>
+                        <p class="pembahasan">${q.rationale}</p>
+                    </div>
+                `;
+            });
+
+            // Tampilkan skor dan pembahasan
+            const totalQuestions = questions.length;
+            scoreOutput.textContent = `Skor Akhir Anda: ${score}/${totalQuestions}`;
+            discussionOutput.innerHTML = discussionHtml;
+            resultsDiv.style.display = 'block';
+
+            // Pastikan MathJax merender pembahasan yang baru dimasukkan
+            if (window.MathJax) {
+                // Mengubah panggilan MathJax.typesetPromise() untuk secara eksplisit
+                // meneruskan elemen dalam array untuk mencegah error 'Object is not iterable'.
+                await MathJax.typesetPromise([discussionOutput]);
+            }
+
+            // Ganti tombol dan matikan permanen
+            submitButton.textContent = 'Refleksi Selesai';
+            submitButton.disabled = true;
+            submitButton.style.backgroundColor = '#6c757d'; // Abu-abu setelah selesai
+            submitButton.style.boxShadow = 'none';
+            
+            // Gulir ke hasil
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+
+        // Event listener untuk tombol submit
+        submitButton.addEventListener('click', displayResults);
+
+        // Fungsi global untuk diakses dari onchange
+        window.checkCompletion = checkCompletion;
+
+        // Inisialisasi Refleksi saat halaman dimuat
+        renderQuiz();
+    </script>
+
+</body>
+</html>

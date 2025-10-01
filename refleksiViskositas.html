@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refleksi Fisika: Tegangan Permukaan</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* CSS Styling dengan Tema Biru Muda */
+        mjx-container[jax="CHTML"][display="true"] {
+            display: contents !important;
+            text-align: justify !important;
+        }
+
+        :root {
+            --primary-color: #007bff; /* Biru Utama */
+            --light-blue: #e6f3ff; /* Biru Muda untuk background */
+            --dark-blue: #0056b3; /* Biru Tua untuk hover */
+            --text-color: #333;
+            --border-color: #b8daff;
+            --correct-color: #d1ecf1; /* Aqua muda */
+            --wrong-color: #f8d7da; /* Merah muda */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-blue);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .reflection-header {
+            text-align: center;
+            font-size: 1.2em;
+            font-style: italic;
+            color: var(--dark-blue);
+            margin-bottom: 30px;
+            padding: 10px;
+            border: 1px dashed var(--primary-color);
+            border-radius: 8px;
+        }
+
+        .question-card {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .option-label {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            border: 1px solid #ddd;
+        }
+
+        .option-label:hover {
+            background-color: #e0f0ff;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+            accent-color: var(--primary-color);
+        }
+
+        #submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, opacity 0.3s, box-shadow 0.3s;
+            margin-top: 30px;
+            box-shadow: 0 4px 6px rgba(0, 123, 255, 0.4);
+        }
+
+        #submit-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+            box-shadow: none;
+        }
+
+        #submit-btn:not(:disabled):hover {
+            background-color: var(--dark-blue);
+            box-shadow: 0 6px 8px rgba(0, 86, 179, 0.5);
+        }
+
+        #results {
+            margin-top: 30px;
+            padding: 20px 0;
+            border-top: 2px dashed var(--primary-color);
+        }
+
+        #score-output {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--dark-blue);
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: var(--light-blue);
+            border-radius: 8px;
+        }
+
+        .discussion-item {
+            margin-bottom: 30px;
+            padding: 15px;
+            border-left: 5px solid var(--primary-color);
+            background-color: #f0f8ff;
+            border-radius: 6px;
+        }
+
+        .discussion-item h3 {
+            color: var(--dark-blue);
+            margin-top: 0;
+            font-size: 1.25em;
+        }
+
+        .discussion-item p.pembahasan {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+        
+        /* MathJax styling for formulas */
+        .question-text, .pembahasan {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Refleksi Viskositas</h1>
+
+        <form id="quiz-form">
+            <!-- Soal akan dimasukkan secara dinamis di sini -->
+        </form>
+
+        <button id="submit-btn" disabled>Kirim Jawaban dan Lihat Skor</button>
+
+        <div id="results" style="display: none;">
+            <h2>Hasil Refleksi</h2>
+            <div id="score-output"></div>
+            <h3>Pembahasan Setiap Soal</h3>
+            <div id="discussion-output"></div>
+        </div>
+    </div>
+
+    <script>
+        // Array Soal Refleksi - Tegangan Permukaan
+        const questions = [
+            {
+                question: "",
+                options: [],
+                correctAnswerIndex: 0, // A
+                rationale: ""
+            },
+            {
+                question: "",
+                options: [],
+                correctAnswerIndex: 0, // A
+                rationale: ""
+            },
+            {
+                question: "",
+                options: [],
+                correctAnswerIndex: 0, // A
+                rationale: ""
+            },
+            {
+                question: "",
+                options: [],
+                correctAnswerIndex: 0, // A
+                rationale: ""
+            },
+            {
+                question: "",
+                options: [],
+                correctAnswerIndex: 0, // A
+                rationale: ""
+            },
+        ];
+
+        const form = document.getElementById('quiz-form');
+        const submitButton = document.getElementById('submit-btn');
+        const resultsDiv = document.getElementById('results');
+        const scoreOutput = document.getElementById('score-output');
+        const discussionOutput = document.getElementById('discussion-output');
+
+        // Fungsi untuk merender semua soal
+        function renderQuiz() {
+            form.innerHTML = questions.map((q, qIndex) => {
+                const optionsHtml = q.options.map((option, oIndex) => `
+                    <label class="option-label">
+                        <input type="radio" name="question-${qIndex}" value="${oIndex}" onchange="checkCompletion()">
+                        ${String.fromCharCode(65 + oIndex)}. ${option}
+                    </label>
+                `).join('');
+
+                return `
+                    <div class="question-card" id="q-${qIndex}">
+                        <div class="question-text">${q.question}</div>
+                        <div class="options">${optionsHtml}</div>
+                    </div>
+                `;
+            }).join('');
+             // Re-render MathJax after content injection
+             if (window.MathJax) {
+                 MathJax.typesetPromise();
+             }
+        }
+
+        // Fungsi untuk memeriksa kelengkapan jawaban dan mengaktifkan tombol submit
+        function checkCompletion() {
+            let answeredCount = 0;
+            questions.forEach((_, index) => {
+                if (document.querySelector(`input[name="question-${index}"]:checked`)) {
+                    answeredCount++;
+                }
+            });
+
+            if (answeredCount === questions.length) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+        
+        // Fungsi untuk mengkonversi nilai MathJax dan menampilkan hasil
+        async function displayResults() {
+            let score = 0;
+            let discussionHtml = '';
+
+            questions.forEach((q, qIndex) => {
+                const selectedOption = document.querySelector(`input[name="question-${qIndex}"]:checked`);
+                const questionCard = document.getElementById(`q-${qIndex}`);
+                let isCorrect = false;
+
+                if (selectedOption) {
+                    const selectedIndex = parseInt(selectedOption.value);
+                    if (selectedIndex === q.correctAnswerIndex) {
+                        score++;
+                        isCorrect = true;
+                    }
+
+                    // Highlight jawaban
+                    const allOptions = questionCard.querySelectorAll('.option-label');
+                    allOptions.forEach((label, oIndex) => {
+                        if (oIndex === q.correctAnswerIndex) {
+                            label.style.backgroundColor = 'var(--correct-color)'; // Warna benar
+                            label.style.fontWeight = 'bold';
+                        }
+                        if (oIndex === selectedIndex && !isCorrect) {
+                            label.style.backgroundColor = 'var(--wrong-color)'; // Warna salah
+                        }
+                    });
+
+                    // Matikan input setelah submit
+                    questionCard.querySelectorAll('input[type="radio"]').forEach(input => input.disabled = true);
+                }
+
+                // Siapkan pembahasan
+                const correctAnswerLetter = String.fromCharCode(65 + q.correctAnswerIndex);
+                const correctAnswerText = q.options[q.correctAnswerIndex];
+
+                discussionHtml += `
+                    <div class="discussion-item">
+                        <h3>Soal ${qIndex + 1}</h3>
+                        <p><strong>Jawaban Benar:</strong> (${correctAnswerLetter}) ${correctAnswerText}</p>
+                        <p><strong>Pembahasan:</strong></p>
+                        <p class="pembahasan">${q.rationale}</p>
+                    </div>
+                `;
+            });
+
+            // Tampilkan skor dan pembahasan
+            const totalQuestions = questions.length;
+            scoreOutput.textContent = `Skor Akhir Anda: ${score}/${totalQuestions}`;
+            discussionOutput.innerHTML = discussionHtml;
+            resultsDiv.style.display = 'block';
+
+            // Pastikan MathJax merender pembahasan yang baru dimasukkan
+            if (window.MathJax) {
+                // Mengubah panggilan MathJax.typesetPromise() untuk secara eksplisit
+                // meneruskan elemen dalam array untuk mencegah error 'Object is not iterable'.
+                await MathJax.typesetPromise([discussionOutput]);
+            }
+
+            // Ganti tombol dan matikan permanen
+            submitButton.textContent = 'Refleksi Selesai';
+            submitButton.disabled = true;
+            submitButton.style.backgroundColor = '#6c757d'; // Abu-abu setelah selesai
+            submitButton.style.boxShadow = 'none';
+            
+            // Gulir ke hasil
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+
+        // Event listener untuk tombol submit
+        submitButton.addEventListener('click', displayResults);
+
+        // Fungsi global untuk diakses dari onchange
+        window.checkCompletion = checkCompletion;
+
+        // Inisialisasi Refleksi saat halaman dimuat
+        renderQuiz();
+    </script>
+
+</body>
+</html>

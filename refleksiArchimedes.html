@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refleksi Fisika: Prinsip Archimedes</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* CSS Styling dengan Tema Hijau */
+        mjx-container[jax="CHTML"][display="true"] {
+            display: contents !important;
+            text-align: justify !important;
+        }
+
+        :root {
+            --primary-color: #28a745; /* Hijau Utama */
+            --light-green: #e9f7ee; /* Hijau Muda untuk background */
+            --dark-green: #1e7e34; /* Hijau Tua untuk hover */
+            --text-color: #333;
+            --border-color: #c3e6cb;
+            --correct-color: #d4edda;
+            --wrong-color: #f8d7da;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-green);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .reflection-header {
+            text-align: center;
+            font-size: 1.2em;
+            font-style: italic;
+            color: var(--dark-green);
+            margin-bottom: 30px;
+            padding: 10px;
+            border: 1px dashed var(--primary-color);
+            border-radius: 8px;
+        }
+
+        .question-card {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .option-label {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            border: 1px solid #ddd;
+        }
+
+        .option-label:hover {
+            background-color: #e0f0e3;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+            accent-color: var(--primary-color);
+        }
+
+        #submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, opacity 0.3s, box-shadow 0.3s;
+            margin-top: 30px;
+            box-shadow: 0 4px 6px rgba(40, 167, 69, 0.4);
+        }
+
+        #submit-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+            box-shadow: none;
+        }
+
+        #submit-btn:not(:disabled):hover {
+            background-color: var(--dark-green);
+            box-shadow: 0 6px 8px rgba(30, 126, 52, 0.5);
+        }
+
+        #results {
+            margin-top: 30px;
+            padding: 20px 0;
+            border-top: 2px dashed var(--primary-color);
+        }
+
+        #score-output {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--dark-green);
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: var(--light-green);
+            border-radius: 8px;
+        }
+
+        .discussion-item {
+            margin-bottom: 30px;
+            padding: 15px;
+            border-left: 5px solid var(--primary-color);
+            background-color: #f0fff0;
+            border-radius: 6px;
+        }
+
+        .discussion-item h3 {
+            color: var(--dark-green);
+            margin-top: 0;
+            font-size: 1.25em;
+        }
+
+        .discussion-item p.pembahasan {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+        
+        /* MathJax styling for formulas */
+        .question-text, .pembahasan {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Refleksi Prinsip Archimedes</h1>
+
+        <form id="quiz-form">
+            <!-- Soal akan dimasukkan secara dinamis di sini -->
+        </form>
+
+        <button id="submit-btn" disabled>Kirim Jawaban dan Lihat Skor</button>
+
+        <div id="results" style="display: none;">
+            <h2>Hasil Refleksi</h2>
+            <div id="score-output"></div>
+            <h3>Pembahasan Setiap Soal</h3>
+            <div id="discussion-output"></div>
+        </div>
+    </div>
+
+    <script>
+        // Array Soal Refleksi - Prinsip Archimedes
+        const questions = [
+            {
+                question: "1. Aulia sedang duduk di tepi kolam sambil menikmati minuman soda dalam kaleng. Setelah isinya habis, ia meletakkan kaleng utuh kosong ke permukaan air dan melihat bahwa kaleng tersebut mengapung. Karena iseng, Aulia lalu meremukkan kaleng hingga pipih, lalu meletakkannya kembali ke permukaan air. Aulia bingung mengapa kaleng utuh mengapung, tetapi kaleng yang sudah diremukkan (menjadi pipih) malah tenggelam, padahal berat kedua kaleng itu sama. Manakah pernyataan yang paling tepat untuk menjelaskan fenomena ini?",
+                options: [
+                    "Kaleng yang diremukkan tenggelam karena gayanya menjadi lebih terkonsentrasi pada satu titik, sehingga tekanan ke bawah lebih besar.",
+                    "Kaleng utuh mengapung karena udara di dalamnya memberikan gaya ke atas, sedangkan udara pada kaleng remuk sudah terlepas.",
+                    "Kaleng utuh memiliki volume total yang besar sehingga massa jenis rata-rata kaleng (termasuk udara di dalamnya) lebih kecil dari massa jenis air, sementara kaleng yang diremukkan memiliki volume total yang sangat kecil, membuat massa jenis rata-ratanya lebih besar dari air.",
+                    "Kaleng utuh mengapung karena tegangan permukaan air menahannya, sedangkan kaleng remuk yang pipih memiliki sudut yang tajam yang merobek tegangan permukaan.",
+                    "Massa jenis logam kaleng meningkat drastis setelah diremukkan, sehingga menjadi lebih berat daripada air."
+                ],
+                correctAnswerIndex: 2, // C
+                rationale: "Prinsip mengapung/tenggelam ditentukan oleh perbandingan massa jenis total benda ($$\\rho_{\\text{total}}$$ ) dan massa jenis fluida ($$\\rho_{\\text{air}}$$ ). Kaleng utuh memiliki volume total ($$V_{\\text{total}}$$ ) yang besar (logam + udara), sehingga $$\\rho_{\\text{total}} < \\rho_{\\text{air}}$$, menyebabkan Gaya Apung ($$F_A$$) lebih besar dari berat ($$W$$). Kaleng yang diremukkan memiliki massa yang sama tetapi $$\\mathbf{V_{\\text{total}}}$$ yang sangat kecil, sehingga $$\\rho_{\\text{total}} \\gg \\rho_{\\text{air}}$$, menyebabkan $$\\mathbf{F_A < W}$$ dan kaleng tenggelam."
+            },
+            {
+                question: "2. Yesya sedang berenang bersama adiknya di kolam renang. Saat berada di darat, Yesya mencoba mengangkat adiknya, namun merasa sangat berat dan tidak mampu mengangkatnya. Namun, ketika mereka berada di dalam air, Yesya dengan mudah mengangkat adiknya yang sama, dan merasa adiknya terasa jauh lebih ringan. Manakah pernyataan yang paling tepat menjelaskan mengapa tubuh terasa lebih ringan di dalam air?",
+                options: [
+                    "Berat adik benar-benar berkurang karena ada tekanan air.",
+                    "Gravitasi (g) di dalam air lebih lemah, jadi adik menjadi ringan.",
+                    "Otot Yesya tiba-tiba menjadi lebih kuat karena air.",
+                    "Air mendorong tubuh adik ke atas dengan kuat, sehingga mengurangi beban yang harus Yesya angkat.",
+                    "Massa jenis tubuh adik berubah menjadi sama dengan massa jenis air."
+                ],
+                correctAnswerIndex: 3, // D
+                rationale: "Air memberikan Gaya Apung ($$F_A$$) yang arahnya ke atas pada tubuh yang terendam. Gaya Apung ini bekerja melawan gaya berat ($$W$$) benda. Berat yang Yesya rasakan saat mengangkat adiknya di dalam air adalah Berat Semu ($$W'$$): $$\\mathbf{W' = W - F_A}$$. Karena air memberikan gaya ke atas yang signifikan, berat semu adik menjadi jauh lebih kecil daripada berat sejati di darat, sehingga Yesya merasa ringan saat mengangkatnya."
+            },
+            {
+                question: "3. Sebuah benda dengan volume $$V$$ dicelupkan seluruhnya ke dalam air. Jika diketahui massa jenis benda $$\\rho_{\\text{benda}} = 1500 \\text{ kg/m}^3$$ dan massa jenis air $$\\rho_{\\text{air}} = 1000 \\text{ kg/m}^3$$. Berapakah perbandingan antara Gaya Apung ($$F_A$$) yang dialami benda dan Berat Sejati ($$W$$) benda tersebut ($$\\mathbf{F_A:W}$$)?",
+                options: [
+                    "$$3:2$$",
+                    "$$2:3$$",
+                    "$$1:1$$",
+                    "$$1500:1000$$",
+                    "$$F_A$$ tidak dapat dihitung karena benda tenggelam."
+                ],
+                correctAnswerIndex: 1, // B
+                rationale: "Ketika benda dicelupkan seluruhnya, perbandingan Gaya Apung ($$F_A = \\rho_{\\text{air}} g V$$) dan Berat Sejati ($$W = \\rho_{\\text{benda}} g V$$) hanya bergantung pada rasio massa jenisnya: $$\\frac{F_A}{W} = \\frac{\\rho_{\\text{air}} g V}{\\rho_{\\text{benda}} g V} = \\frac{\\rho_{\\text{air}}}{\\rho_{\\text{benda}}}$$ $$\\frac{F_A}{W} = \\frac{1000 \\text{ kg/m}^3}{1500 \\text{ kg/m}^3} = \\frac{10}{15} = \\frac{2}{3}$$ Jadi, perbandingannya adalah $$F_A:W = 2:3$$. Gaya Apung lebih kecil dari berat benda, yang mengonfirmasi bahwa benda tersebut tenggelam."
+            },
+            {
+                question: "4. Ira memiliki tiga buah logam diberi identitas sebagai logam A, B, dan C. Logam C adalah campuran logam A dan logam B. Ketika logam C ditimbang di udara diperoleh beratnya $$W = 0.2 \\text{ N}$$. Sedangkan ketika ditimbang di dalam air beratnya $$W' = 0.185 \\text{ N}$$. Diketahui kerapatan logam A $$\\rho_A = 20 \\text{ g/cm}^3$$ dan massa jenis logam B $$\\rho_B = 10 \\text{ g/cm}^3$$. Berapakah besar massa dari logam A ($$m_A$$) dalam gram? (Asumsi $$g = 10 \\text{ m/s}^2$$ dan $$\\rho_{\\text{air}} = 1000 \\text{ kg/m}^3$$.",
+                options: [
+                    "$$1 \\text{ g}$$",
+                    "$$5 \\text{ g}$$",
+                    "$$10 \\text{ g}$$",
+                    "$$50 \\text{ g}$$",
+                    "$$100 \\text{ g}$$"
+                ],
+                correctAnswerIndex: 2, // C
+                rationale: "Langkah 1: Hitung Gaya Apung ($$F_A$$) dan Massa Total ($$m_{\\text{total}}$$) Logam C.$$\\\\mathbf{F_A} = W - W' = 0.2 \\text{ N} - 0.185 \\text{ N} = 0.015 \\text{ N}$$ (Gaya Apung)$$m_{\\text{total}} = \\frac{W}{g} = \\frac{0.2 \\text{ N}}{10 \\text{ m/s}^2} = 0.02 \\text{ kg} = 20 \\text{ g}$$ (Massa Total)Langkah 2: Hitung Volume Total ($$V_{\\text{total}}$$) dari Logam C.$$\\mathbf{V_{\\text{total}}} = \\frac{F_A}{\\rho_{\\text{air}} g} = \\frac{0.015 \\text{ N}}{(1000 \\text{ kg/m}^3)(10 \\text{ m/s}^2)} = 1.5 \\times 10^{-6} \\text{ m}^3 = 1.5 \\text{ cm}^3$$Langkah 3: Gunakan prinsip volume campuran ($$V_{\\text{total}} = V_A + V_B$$) dengan $$V = m/\\rho$$ dan $$m_B = m_{\\text{total}} - m_A = 20 - m_A$$. $$1.5 = \\frac{m_A}{\\rho_A} + \\frac{m_B}{\\rho_B} = \\frac{m_A}{20} + \\frac{(20 - m_A)}{10}$$ (Dalam satuan $$g$$ dan $$cm^3$$)$$30 = m_A + 2(20 - m_A)$$ (Dikalikan 20)$$\\mathbf{30 = m_A + 40 - 2m_A}$$ $$\\mathbf{m_A} = 40 - 30 = \\mathbf{10 \\text{ g}}$$ (Massa Logam A)"
+            },
+            {
+                question: "5. Michell memiliki sepotong tahu goreng berbentuk balok yang mengapung dalam bejana berisi air dan minyak. Sebanyak $$50\\%$$ volume tahu terendam dalam air ($$V_{\\text{air}} = 0.5V$$), dan $$30\\%$$ lainnya dalam minyak ($$V_{\\text{minyak}} = 0.3V$$). Jika massa jenis air $$\\rho_{\\text{air}} = 1000\\text{ kg/m}^3$$ dan minyak $$\\rho_{\\text{minyak}} = 800\\text{ kg/m}^3$$, berapakah massa jenis tahu ($$\\rho_{\\text{tahu}}$$) tersebut?",
+                options: [
+                    "$$320 \\text{ kg/m}^3$$",
+                    "$$400 \\text{ kg/m}^3$$",
+                    "$$740 \\text{ kg/m}^3$$",
+                    "$$800 \\text{ kg/m}^3$$",
+                    "$$960 \\text{ kg/m}^3$$"
+                ],
+                correctAnswerIndex: 2, // C
+                rationale: "Benda mengapung, sehingga berat benda ($$W$$) sama dengan total Gaya Apung ($$F_A$$) yang diterimanya dari kedua fluida:$$\\mathbf{W = F_{A\\text{ air}} + F_{A\\text{ minyak}}}$$ $$\\rho_{\\text{tahu}} g V_{\\text{tahu}} = (\\rho_{\\text{air}} g V_{\\text{air}}) + (\\rho_{\\text{minyak}} g V_{\\text{minyak}})$$ $$\\rho_{\\text{tahu}} V = (1000)(0.5V) + (800)(0.3V)$$ $$\\rho_{\\text{tahu}} = (1000 \\times 0.5) + (800 \\times 0.3)$$ $$\\rho_{\\text{tahu}} = 500 + 240$$ $$\\mathbf{\\rho_{\\text{tahu}} = 740 \\text{ kg/m}^3}$$"
+            }
+        ];
+
+        const form = document.getElementById('quiz-form');
+        const submitButton = document.getElementById('submit-btn');
+        const resultsDiv = document.getElementById('results');
+        const scoreOutput = document.getElementById('score-output');
+        const discussionOutput = document.getElementById('discussion-output');
+
+        // Fungsi untuk merender semua soal
+        function renderQuiz() {
+            form.innerHTML = questions.map((q, qIndex) => {
+                const optionsHtml = q.options.map((option, oIndex) => `
+                    <label class="option-label">
+                        <input type="radio" name="question-${qIndex}" value="${oIndex}" onchange="checkCompletion()">
+                        ${String.fromCharCode(65 + oIndex)}. ${option}
+                    </label>
+                `).join('');
+
+                return `
+                    <div class="question-card" id="q-${qIndex}">
+                        <div class="question-text">${q.question}</div>
+                        <div class="options">${optionsHtml}</div>
+                    </div>
+                `;
+            }).join('');
+             // Re-render MathJax after content injection
+             if (window.MathJax) {
+                 MathJax.typesetPromise();
+             }
+        }
+
+        // Fungsi untuk memeriksa kelengkapan jawaban dan mengaktifkan tombol submit
+        function checkCompletion() {
+            let answeredCount = 0;
+            questions.forEach((_, index) => {
+                if (document.querySelector(`input[name="question-${index}"]:checked`)) {
+                    answeredCount++;
+                }
+            });
+
+            if (answeredCount === questions.length) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+        
+        // Fungsi untuk mengkonversi nilai MathJax dan menampilkan hasil
+        async function displayResults() {
+            let score = 0;
+            let discussionHtml = '';
+
+            questions.forEach((q, qIndex) => {
+                const selectedOption = document.querySelector(`input[name="question-${qIndex}"]:checked`);
+                const questionCard = document.getElementById(`q-${qIndex}`);
+                let isCorrect = false;
+
+                if (selectedOption) {
+                    const selectedIndex = parseInt(selectedOption.value);
+                    if (selectedIndex === q.correctAnswerIndex) {
+                        score++;
+                        isCorrect = true;
+                    }
+
+                    // Highlight jawaban
+                    const allOptions = questionCard.querySelectorAll('.option-label');
+                    allOptions.forEach((label, oIndex) => {
+                        if (oIndex === q.correctAnswerIndex) {
+                            label.style.backgroundColor = 'var(--correct-color)'; // Hijau muda untuk jawaban benar
+                            label.style.fontWeight = 'bold';
+                        }
+                        if (oIndex === selectedIndex && !isCorrect) {
+                            label.style.backgroundColor = 'var(--wrong-color)'; // Merah muda untuk jawaban salah
+                        }
+                    });
+
+                    // Matikan input setelah submit
+                    questionCard.querySelectorAll('input[type="radio"]').forEach(input => input.disabled = true);
+                }
+
+                // Siapkan pembahasan
+                const correctAnswerLetter = String.fromCharCode(65 + q.correctAnswerIndex);
+                const correctAnswerText = q.options[q.correctAnswerIndex];
+
+                discussionHtml += `
+                    <div class="discussion-item">
+                        <h3>Soal ${qIndex + 1}</h3>
+                        <p><strong>Jawaban Benar:</strong> (${correctAnswerLetter}) ${correctAnswerText}</p>
+                        <p><strong>Pembahasan:</strong></p>
+                        <p class="pembahasan">${q.rationale}</p>
+                    </div>
+                `;
+            });
+
+            // Tampilkan skor dan pembahasan
+            const totalQuestions = questions.length;
+            scoreOutput.textContent = `Skor Akhir Anda: ${score}/${totalQuestions}`;
+            discussionOutput.innerHTML = discussionHtml;
+            resultsDiv.style.display = 'block';
+
+            // Pastikan MathJax merender pembahasan yang baru dimasukkan
+            if (window.MathJax) {
+                // Mengubah panggilan MathJax.typesetPromise() untuk secara eksplisit
+                // meneruskan elemen dalam array untuk mencegah error 'Object is not iterable'.
+                await MathJax.typesetPromise([discussionOutput]);
+            }
+
+            // Ganti tombol dan matikan permanen
+            submitButton.textContent = 'Refleksi Selesai';
+            submitButton.disabled = true;
+            submitButton.style.backgroundColor = '#6c757d'; // Abu-abu setelah selesai
+            submitButton.style.boxShadow = 'none';
+            
+            // Gulir ke hasil
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+
+        // Event listener untuk tombol submit
+        submitButton.addEventListener('click', displayResults);
+
+        // Fungsi global untuk diakses dari onchange
+        window.checkCompletion = checkCompletion;
+
+        // Inisialisasi Refleksi saat halaman dimuat
+        renderQuiz();
+    </script>
+
+</body>
+</html>

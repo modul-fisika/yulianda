@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refleksi Fisika: Hukum Pascal</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* CSS Styling dengan Tema Hijau */
+        mjx-container[jax="CHTML"][display="true"] {
+            display: contents !important;
+            text-align: justify !important;
+        }
+
+        :root {
+            --primary-color: #28a745; /* Hijau Utama */
+            --light-green: #e9f7ee; /* Hijau Muda untuk background */
+            --dark-green: #1e7e34; /* Hijau Tua untuk hover */
+            --text-color: #333;
+            --border-color: #c3e6cb;
+            --correct-color: #d4edda;
+            --wrong-color: #f8d7da;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-green);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .reflection-header {
+            text-align: center;
+            font-size: 1.2em;
+            font-style: italic;
+            color: var(--dark-green);
+            margin-bottom: 30px;
+            padding: 10px;
+            border: 1px dashed var(--primary-color);
+            border-radius: 8px;
+        }
+
+        .question-card {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .option-label {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            border: 1px solid #ddd;
+        }
+
+        .option-label:hover {
+            background-color: #e0f0e3;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+            accent-color: var(--primary-color);
+        }
+
+        #submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, opacity 0.3s, box-shadow 0.3s;
+            margin-top: 30px;
+            box-shadow: 0 4px 6px rgba(40, 167, 69, 0.4);
+        }
+
+        #submit-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+            box-shadow: none;
+        }
+
+        #submit-btn:not(:disabled):hover {
+            background-color: var(--dark-green);
+            box-shadow: 0 6px 8px rgba(30, 126, 52, 0.5);
+        }
+
+        #results {
+            margin-top: 30px;
+            padding: 20px 0;
+            border-top: 2px dashed var(--primary-color);
+        }
+
+        #score-output {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--dark-green);
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: var(--light-green);
+            border-radius: 8px;
+        }
+
+        .discussion-item {
+            margin-bottom: 30px;
+            padding: 15px;
+            border-left: 5px solid var(--primary-color);
+            background-color: #f0fff0;
+            border-radius: 6px;
+        }
+
+        .discussion-item h3 {
+            color: var(--dark-green);
+            margin-top: 0;
+            font-size: 1.25em;
+        }
+
+        .discussion-item p.pembahasan {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+        
+        /* MathJax styling for formulas */
+        .question-text, .pembahasan {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Refleksi Hukum Pascal</h1>
+
+        <form id="quiz-form">
+            <!-- Soal akan dimasukkan secara dinamis di sini -->
+        </form>
+
+        <button id="submit-btn" disabled>Kirim Jawaban dan Lihat Skor</button>
+
+        <div id="results" style="display: none;">
+            <h2>Hasil Refleksi</h2>
+            <div id="score-output"></div>
+            <h3>Pembahasan Setiap Soal</h3>
+            <div id="discussion-output"></div>
+        </div>
+    </div>
+
+    <script>
+        // Array Soal Refleksi - Hukum Pascal
+        const questions = [
+            {
+                question: "1. Rahmat adalah seorang montir sepeda motor, menjelaskan cara kerja sistem pengereman. Sistem ini terdiri atas rem tangan, tabung berisi minyak rem, selang rem, dua piston, dan kampas rem yang terletak di dekat roda. Piston kedua di bagian roda memiliki luas penampang yang jauh lebih besar daripada piston pertama di rem tangan. Pernyataan manakah yang paling tepat terkait sistem tersebut?",
+                options: [
+                    "Besar tekanan pada rem motor sama dengan dari tekanan pada kampas rem",
+                    "Rem pada motor adalah sistem rangkaian hidrolik yang akan bekerja dalam kondisi sitem terbuka",
+                    "Besar gaya yang diberikan pada rem motor sama dengan gaya yang diterima pada kampas rem",
+                    "Rem pada motor dapat tetap berfungsi walaupun tanpa minyak",
+                    "Gaya yang dihasilkan piston kedua akan lebih besar dibandingkan gaya yang diberikan pada piston pertama."
+                ],
+                correctAnswerIndex: 4, // E
+                rationale: "Sistem rem hidrolik adalah aplikasi langsung dari Hukum Pascal, yang menyatakan bahwa tekanan ($$P$$) yang diberikan pada fluida tertutup (minyak rem) diteruskan ke seluruh bagian fluida dan dinding bejana dengan sama besar. Secara matematis: $$P_1 = P_2$$ atau $$\\frac{F_1}{A_1} = \\frac{F_2}{A_2}$$. Karena piston pada kampas rem ($$A_2$$) dirancang jauh lebih besar daripada piston rem tangan ($$A_1$$), maka gaya yang dihasilkan ($$F_2$$) harus lebih besar daripada gaya input ($$F_1$$) untuk menjaga tekanan tetap sama. Inilah fungsi sistem hidrolik sebagai pengganda gaya."
+            },
+            {
+                question: "2. Aldo ingin memperbaiki rancangan sistem tempat pencucian mobil yang akan dibangunnya. Pada sistem pencucian mobil tersebut terdapat dua buah piston yang memiliki ukuran yang berbeda yaitu piston kecil dan piston besar. Aldo ingin membuat ukuran luas pada piston besar $$4$$ kali dari piston kecil ($$A_2 = 4A_1$$). Manakah pernyataan yang benar terkait rancangan hidrolik Aldo?",
+                options: [
+                    "Gaya yang diperoleh pada piston besar sama dengan $$4$$ kali pada piston kecil",
+                    "Gaya yang diperoleh pada piston besar sama dengan $$16$$ kali dari gaya pada piston kecil",
+                    "Gaya yang diperoleh pada piston besar sama dengan $$0.25$$ kali dari gaya pada piston kecil",
+                    "Gaya yang diperoleh pada piston kecil sama dengan $$4$$ kali yang pada piston besar",
+                    "Gaya yang diperoleh pada piston kecil sama dengan $$0.5$$ kali dari gaya pada piston besar"
+                ],
+                correctAnswerIndex: 0, // A
+                rationale: "Dari persamaan Hukum Pascal: $$\\frac{F_1}{A_1} = \\frac{F_2}{A_2}$$. Diketahui $$A_2 = 4A_1$$. Substitusi rasio luas ini: $$\\frac{F_1}{A_1} = \\frac{F_2}{4A_1}$$ Dengan mengalikan silang, didapatkan $$F_2 = 4F_1$$. Gaya yang diperoleh pada piston besar ($$F_2$$) adalah $$4$$ kali lipat dari gaya yang diberikan pada piston kecil ($$F_1$$). Sistem hidrolik ini bertindak sebagai pengganda gaya, di mana faktor penggandaan sama dengan rasio luas penampang."
+            },
+            {
+                question: "3. Wahyu mengemudiakan mobil sedan dengan kecepatan $$40 \\text{ km/jam}$$. Pada jarak $$100 \\text{ m}$$ Wahyu melakukan pengereman ketika melihat lampu lalu lintas berubah menjadi merah dengan gaya dorong pada rem ($$F_1$$) sebesar $$100 \\text{ N}$$. Jika besar diameter slinder rem dekat kaki ($$D_1$$) $$0.5 \\text{ cm}$$ dan slinder rem pada ban ($$D_2$$) $$2.5 \\text{ cm}$$. Berapa besarnya gaya ($$F_2$$) yang diterima ban mobil?",
+                options: [
+                    "$$400 \\text{ N}$$",
+                    "$$1000 \\text{ N}$$",
+                    "$$1600 \\text{ N}$$",
+                    "$$2500 \\text{ N}$$",
+                    "$$4000 \\text{ N}$$"
+                ],
+                correctAnswerIndex: 3, // D
+                rationale: "Menggunakan Hukum Pascal, $$\\frac{F_1}{A_1} = \\frac{F_2}{A_2}$$. Karena luas penampang lingkaran ($$A \\propto D^2$$), maka $$\\frac{F_2}{F_1} = \\left(\\frac{D_2}{D_1}\\right)^2$$. Kita cari nilai $$F_2$$:$$F_2 = F_1 \\times \\left(\\frac{D_2}{D_1}\\right)^2$$ $$F_2 = 100 \\text{ N} \\times \\left(\\frac{2.5 \\text{ cm}}{0.5 \\text{ cm}}\\right)^2$$ $$F_2 = 100 \\text{ N} \\times (5)^2$$ $$F_2 = 100 \\text{ N} \\times 25$$ $$F_2 = 2.500 \\text{ N}$$ Gaya yang diterima oleh kampas rem pada ban mobil adalah $$2.500 \\text{ N}$$."
+            },
+            {
+                question: "4. Dua dongkrak hidrolik, I dan II, memiliki luas piston yang identik, $$A_1$$ dan $$A_2$$. Piston pada Dongkrak I berbentuk lingkaran sempurna, sedangkan piston pada Dongkrak II berbentuk persegi dengan luas yang sama. Untuk mengangkat beban $$W$$, manakah yang benar mengenai gaya input $$F_I$$ dan $$F_{II}$$ yang diperlukan?",
+                options: [
+                    "$$F_I$$ sedikit lebih kecil",
+                    "$$F_{II}$$ lebih besar",
+                    "$$F_I$$ sama dengan $$F_{II}$$",
+                    "$$F_{II}$$ sama dengan $$2F_I$$",
+                    "$$F_I$$ lebih besar"
+                ],
+                correctAnswerIndex: 2, // C
+                rationale: "Dalam Hukum Pascal, yang penting adalah Luas Penampang Efektif ($$A$$), bukan bentuk geometrisnya. Selama luas piston input ($$A_1$$) dan piston output ($$A_2$$) sama pada kedua dongkrak, rasio gaya yang dibutuhkan akan selalu sama, terlepas dari apakah piston berbentuk lingkaran, persegi, atau bentuk lainnya. Oleh karena itu, gaya input yang diperlukan harus sama: $$\\mathbf{F_I = F_{II}}$$."
+            },
+            {
+                question: "5. Sebuah sistem hidrolik memiliki $$A_1 = 5 \\text{ cm}^2$$ dan $$A_2 = 100 \\text{ cm}^2$$. Jika $$F_1 = 10 \\text{ N}$$ diberikan, berapakah tekanan yang dialami oleh piston besar ($$P_2$$)?",
+                options: [
+                    "$$P_2 = 0.5 \\text{ N/cm}^2$$",
+                    "$$P_2 = 2 \\text{ N/cm}^2$$",
+                    "$$P_2 = 20 \\text{ N/cm}^2$$",
+                    "$$P_2 = 100 \\text{ N/cm}^2$$",
+                    "$$P_2 = 200 \\text{ N/cm}^2$$"
+                ],
+                correctAnswerIndex: 1, // B
+                rationale: "Berdasarkan Hukum Pascal, tekanan yang diberikan pada piston kecil ($$P_1$$) akan diteruskan sama besar ke piston besar ($$P_2$$), yaitu $$\\mathbf{P_1 = P_2}$$. Kita hitung $$P_1$$ menggunakan gaya input ($$F_1$$) dan luas piston kecil ($$A_1$$):$$P_2 = P_1 = \\frac{F_1}{A_1} = \\frac{10 \\text{ N}}{5 \\text{ cm}^2} = 2 \\text{ N/cm}^2$$"
+            }
+        ];
+
+        const form = document.getElementById('quiz-form');
+        const submitButton = document.getElementById('submit-btn');
+        const resultsDiv = document.getElementById('results');
+        const scoreOutput = document.getElementById('score-output');
+        const discussionOutput = document.getElementById('discussion-output');
+
+        // Fungsi untuk merender semua soal
+        function renderQuiz() {
+            form.innerHTML = questions.map((q, qIndex) => {
+                const optionsHtml = q.options.map((option, oIndex) => `
+                    <label class="option-label">
+                        <input type="radio" name="question-${qIndex}" value="${oIndex}" onchange="checkCompletion()">
+                        ${String.fromCharCode(65 + oIndex)}. ${option}
+                    </label>
+                `).join('');
+
+                return `
+                    <div class="question-card" id="q-${qIndex}">
+                        <div class="question-text">${q.question}</div>
+                        <div class="options">${optionsHtml}</div>
+                    </div>
+                `;
+            }).join('');
+             // Re-render MathJax after content injection
+             if (window.MathJax) {
+                 MathJax.typesetPromise();
+             }
+        }
+
+        // Fungsi untuk memeriksa kelengkapan jawaban dan mengaktifkan tombol submit
+        function checkCompletion() {
+            let answeredCount = 0;
+            questions.forEach((_, index) => {
+                if (document.querySelector(`input[name="question-${index}"]:checked`)) {
+                    answeredCount++;
+                }
+            });
+
+            if (answeredCount === questions.length) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+        
+        // Fungsi untuk mengkonversi nilai MathJax dan menampilkan hasil
+        async function displayResults() {
+            let score = 0;
+            let discussionHtml = '';
+
+            questions.forEach((q, qIndex) => {
+                const selectedOption = document.querySelector(`input[name="question-${qIndex}"]:checked`);
+                const questionCard = document.getElementById(`q-${qIndex}`);
+                let isCorrect = false;
+
+                if (selectedOption) {
+                    const selectedIndex = parseInt(selectedOption.value);
+                    if (selectedIndex === q.correctAnswerIndex) {
+                        score++;
+                        isCorrect = true;
+                    }
+
+                    // Highlight jawaban
+                    const allOptions = questionCard.querySelectorAll('.option-label');
+                    allOptions.forEach((label, oIndex) => {
+                        if (oIndex === q.correctAnswerIndex) {
+                            label.style.backgroundColor = 'var(--correct-color)'; // Hijau muda untuk jawaban benar
+                            label.style.fontWeight = 'bold';
+                        }
+                        if (oIndex === selectedIndex && !isCorrect) {
+                            label.style.backgroundColor = 'var(--wrong-color)'; // Merah muda untuk jawaban salah
+                        }
+                    });
+
+                    // Matikan input setelah submit
+                    questionCard.querySelectorAll('input[type="radio"]').forEach(input => input.disabled = true);
+                }
+
+                // Siapkan pembahasan
+                const correctAnswerLetter = String.fromCharCode(65 + q.correctAnswerIndex);
+                const correctAnswerText = q.options[q.correctAnswerIndex];
+
+                discussionHtml += `
+                    <div class="discussion-item">
+                        <h3>Soal ${qIndex + 1}</h3>
+                        <p><strong>Jawaban Benar:</strong> (${correctAnswerLetter}) ${correctAnswerText}</p>
+                        <p><strong>Pembahasan:</strong></p>
+                        <p class="pembahasan">${q.rationale}</p>
+                    </div>
+                `;
+            });
+
+            // Tampilkan skor dan pembahasan
+            const totalQuestions = questions.length;
+            scoreOutput.textContent = `Skor Akhir Anda: ${score}/${totalQuestions}`;
+            discussionOutput.innerHTML = discussionHtml;
+            resultsDiv.style.display = 'block';
+
+            // Pastikan MathJax merender pembahasan yang baru dimasukkan
+            if (window.MathJax) {
+                // Mengubah panggilan MathJax.typesetPromise() untuk secara eksplisit
+                // meneruskan elemen dalam array untuk mencegah error 'Object is not iterable'.
+                await MathJax.typesetPromise([discussionOutput]);
+            }
+
+            // Ganti tombol dan matikan permanen
+            submitButton.textContent = 'Refleksi Selesai';
+            submitButton.disabled = true;
+            submitButton.style.backgroundColor = '#6c757d'; // Abu-abu setelah selesai
+            submitButton.style.boxShadow = 'none';
+            
+            // Gulir ke hasil
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+
+        // Event listener untuk tombol submit
+        submitButton.addEventListener('click', displayResults);
+
+        // Fungsi global untuk diakses dari onchange
+        window.checkCompletion = checkCompletion;
+
+        // Inisialisasi Refleksi saat halaman dimuat
+        renderQuiz();
+    </script>
+
+</body>
+</html>

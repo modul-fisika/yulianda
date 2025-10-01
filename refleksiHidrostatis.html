@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refleksi Fluida Statis - Tekanan Hidrostatis</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* CSS Styling dengan Tema Hijau */
+        mjx-container[jax="CHTML"][display="true"] {
+            display: contents !important;
+            text-align: justify !important;
+        }
+
+        :root {
+            --primary-color: #28a745; /* Hijau Utama */
+            --light-green: #e9f7ee; /* Hijau Muda untuk background */
+            --dark-green: #1e7e34; /* Hijau Tua untuk hover */
+            --text-color: #333;
+            --border-color: #c3e6cb;
+            --correct-color: #d4edda;
+            --wrong-color: #f8d7da;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-green);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .reflection-header {
+            text-align: center;
+            font-size: 1.2em;
+            font-style: italic;
+            color: var(--dark-green);
+            margin-bottom: 30px;
+            padding: 10px;
+            border: 1px dashed var(--primary-color);
+            border-radius: 8px;
+        }
+
+        .question-card {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .option-label {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            border: 1px solid #ddd;
+        }
+
+        .option-label:hover {
+            background-color: #e0f0e3;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+            accent-color: var(--primary-color);
+        }
+
+        #submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, opacity 0.3s, box-shadow 0.3s;
+            margin-top: 30px;
+            box-shadow: 0 4px 6px rgba(40, 167, 69, 0.4);
+        }
+
+        #submit-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+            box-shadow: none;
+        }
+
+        #submit-btn:not(:disabled):hover {
+            background-color: var(--dark-green);
+            box-shadow: 0 6px 8px rgba(30, 126, 52, 0.5);
+        }
+
+        #results {
+            margin-top: 30px;
+            padding: 20px 0;
+            border-top: 2px dashed var(--primary-color);
+        }
+
+        #score-output {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--dark-green);
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: var(--light-green);
+            border-radius: 8px;
+        }
+
+        .discussion-item {
+            margin-bottom: 30px;
+            padding: 15px;
+            border-left: 5px solid var(--primary-color);
+            background-color: #f0fff0;
+            border-radius: 6px;
+        }
+
+        .discussion-item h3 {
+            color: var(--dark-green);
+            margin-top: 0;
+            font-size: 1.25em;
+        }
+
+        .discussion-item p.pembahasan {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+        
+        /* MathJax styling for formulas */
+        .question-text, .pembahasan {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Refleksi Tekanan Hidrostatis</h1>
+
+        <form id="quiz-form">
+            <!-- Soal akan dimasukkan secara dinamis di sini -->
+        </form>
+
+        <button id="submit-btn" disabled>Kirim Jawaban dan Lihat Skor</button>
+
+        <div id="results" style="display: none;">
+            <h2>Hasil Refleksi</h2>
+            <div id="score-output"></div>
+            <h3>Pembahasan Setiap Soal</h3>
+            <div id="discussion-output"></div>
+        </div>
+    </div>
+
+    <script>
+        // Array Soal Refleksi
+        const questions = [
+            {
+                question: "1. Putri melakukan percobaan dengan tiga botol plastik identik. Ia membuat satu lubang kecil di setiap botol, masing-masing pada posisi berbeda: lubang pertama di bagian atas, lubang kedua di tengah, dan lubang ketiga di dekat dasar botol. Setelah itu, Andi mengisi ketiga botol tersebut penuh dengan air dan membuka ketiga lubang secara bersamaan. Setelah lubang-lubang dibuka, air memancar keluar dari ketiga lubang. Pernyataan yang benar mengenai jarak pancaran air dari ketiga lubang adalah …",
+                options: [
+                    "Jarak pancaran air dari semua lubang sama karena ketiga botol identik.",
+                    "Jarak pancaran terbesar berasal dari lubang di bagian atas.",
+                    "Jarak pancaran terbesar berasal dari lubang di bagian tengah.",
+                    "Jarak pancaran terbesar berasal dari lubang di dekat dasar botol.",
+                    "Jarak pancaran air tidak bergantung pada posisi lubang, tetapi pada ukuran botol."
+                ],
+                correctAnswerIndex: 3, // D
+                rationale: "Semakin dalam letak lubang ($$h$$), semakin besar tekanan hidrostatis ($$P = \\rho g h$$) yang bekerja, sehingga kecepatan pancaran air semakin besar dan jarak pancaran air semakin jauh. Lubang di dekat dasar botol memiliki kedalaman $$h$$ terbesar dari permukaan."
+            },
+            {
+                question: "2. Rina memiliki hobi berenang di laut. Rina menceritakan pengalamannya berenang di Labuan Bajo untuk melihat keindahan bawah laut yang memiliki kedalaman $$10 \\text{ m}$$. Rina berenang sambil menyelam dengan posisi berada $$7 \\text{ m}$$ dari dasar laut. Jika massa jenis air laut $$1000 \\text{ kg/m}^3$$ dan gravitasi $$9.8 \\text{ m/s}^2$$. Berapakah besar tekanan hidrostatis yang diterima oleh tubuh Rina?",
+                options: [
+                    "$$5000 \\text{ Pa}$$",
+                    "$$15000 \\text{ Pa}$$",
+                    "$$10000 \\text{ Pa}$$",
+                    "$$29400 \\text{ Pa}$$",
+                    "$$68600 \\text{ Pa}$$"
+                ],
+                correctAnswerIndex: 3, // D
+                rationale: "Kedalaman yang digunakan dalam rumus tekanan hidrostatis adalah kedalaman dari permukaan air, yaitu $$h = 10 \\text{ m} - 7 \\text{ m} = 3 \\text{ m}$$. Besar Tekanan Hidrostatis:$$P = \\rho g h$$\$$P = 1000 \\times 9.8 \\times 3$$\$$P = 29.400 \\text{ Pa}$$"
+            },
+            {
+                question: "3. Dinda melakukan eksperimen pada sebuah pipa U dengan menuangkan air yang pada sisi kiri dituang minyak dan sisi kanan dituang alkohol seperti pada gambar. Dinda memperoleh data berupa ketinggian minyak sebesar $$20 \\text{ cm}$$, ketinggian alkohol $$8 \\text{ cm}$$ dan perbedaan ketinggian air $$12 \\text{ cm}$$. Jika massa jenis air dan minyak $$1 \\text{ g/cm}^3$$ dan $$0.8 \\text{ g/cm}^3$$. Berapakah besar nilai massa jenis alkohol?",
+                options: [
+                    "$$0.35 \\text{ g/cm}^3$$",
+                    "$$0.80 \\text{ g/cm}^3$$",
+                    "$$1.25 \\text{ g/cm}^3$$",
+                    "$$1.75 \\text{ g/cm}^3$$",
+                    "$$3.50 \\text{ g/cm}^3$$"
+                ],
+                correctAnswerIndex: 4, // E
+                rationale: "Menggunakan prinsip tekanan pada dua titik di ketinggian yang sama:$$P_{\\text{kiri}} = P_{\\text{kanan}}$$\n$$\\rho_{\\text{minyak}} h_{\\text{minyak}} + \\rho_{\\text{air}} (h_{\\text{air\_kiri}} - h_{\\text{air\_kanan}}) = \\rho_{\\text{alkohol}} h_{\\text{alkohol}}$$\n$$(0.8)(20) + (1)(12) = \\rho_{\\text{alkohol}}(8)$$\n$$16 + 12 = 8 \\rho_{\\text{alkohol}}$$\n$$28 = 8 \\rho_{\\text{alkohol}}$$\n$$\\rho_{\\text{alkohol}} = 28/8 = 3.5 \\text{ g/cm}^3$$"
+            },
+            {
+                question: "4. Aulia memiliki sebuah manometer terbukan yang diisi fluida berupa raksa dengan massa jenis $$13200 \\text{ kg/m}^3$$. Jika terjadi perpedaan sebesar $$h_1 = 4 \\text{ cm}$$. Manakah pernyataan yang tepat digunakan untuk menghitung besar tekanan gas?",
+                options: [
+                    "Tekanan gas = Tekanan atmosfer + tekanan raksa ($$h_1$$)",
+                    "Tekanan gas = Tekanan atmosfer - tekanan raksa ($$h_1$$)",
+                    "Tekanan gas = Tekanan raksa ($$h_1$$)",
+                    "Tekanan gas = Tekanan atmosfer \\times tekanan raksa ($$h_1$$)",
+                    "Tekanan gas = 0"
+                ],
+                correctAnswerIndex: 0, // A
+                rationale: "Pada manometer terbuka, jika ketinggian fluida pada sisi yang terhubung ke gas lebih rendah dari sisi atmosfer (artinya fluida terdorong ke sisi atmosfer), maka tekanan gas $$\\mathbf{P_{gas}}$$ lebih besar daripada tekanan atmosfer $$\\mathbf{P_{atmosfer}}$$. Persamaan yang digunakan adalah:$$P_{\\text{gas}} = P_{\\text{atmosfer}} + P_{\\text{hidrostatis}} (h_1)$$(Dengan $$P_{\\text{hidrostatis}} = \\rho g h_1$$)"
+            },
+            {
+                question: "5. Dua wadah berbeda—Wadah X dan Wadah Y—diletakkan di meja. Wadah X diisi minyak ($$\\rho_X=800\\text{ kg/m}^3$$) hingga kedalaman $$h_X=10\\text{ cm}$$. Wadah Y diisi air ($$\\rho_Y=1000\\text{ kg/m}^3$$) hingga kedalaman $$h_Y=8\\text{ cm}$$. Berapakah perbandingan tekanan hidrostatis di dasar Wadah X dan Wadah Y ($$P_X:P_Y$$)?",
+                options: [
+                    "$$1:1$$",
+                    "$$4:5$$",
+                    "$$5:4$$",
+                    "$$8:10$$",
+                    "$$10:8$$"
+                ],
+                correctAnswerIndex: 0, // A
+                rationale: "Tekanan Hidrostatis $$P = \\rho g h$$. Perbandingan $$P_X:P_Y$$ dihitung sebagai:$$P_X:P_Y = (\\rho_X h_X):(\\rho_Y h_Y)$$\n$$P_X:P_Y = (800 \\times 10):(1000 \\times 8)$$\n$$P_X:P_Y = 8000:8000$$\n$$P_X:P_Y = 1:1$$."
+            }
+        ];
+
+        const form = document.getElementById('quiz-form');
+        const submitButton = document.getElementById('submit-btn');
+        const resultsDiv = document.getElementById('results');
+        const scoreOutput = document.getElementById('score-output');
+        const discussionOutput = document.getElementById('discussion-output');
+
+        // Fungsi untuk merender semua soal
+        function renderQuiz() {
+            form.innerHTML = questions.map((q, qIndex) => {
+                const optionsHtml = q.options.map((option, oIndex) => `
+                    <label class="option-label">
+                        <input type="radio" name="question-${qIndex}" value="${oIndex}" onchange="checkCompletion()">
+                        ${String.fromCharCode(65 + oIndex)}. ${option}
+                    </label>
+                `).join('');
+
+                return `
+                    <div class="question-card" id="q-${qIndex}">
+                        <div class="question-text">${q.question}</div>
+                        <div class="options">${optionsHtml}</div>
+                    </div>
+                `;
+            }).join('');
+             // Re-render MathJax after content injection
+             if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        // Fungsi untuk memeriksa kelengkapan jawaban dan mengaktifkan tombol submit
+        function checkCompletion() {
+            let answeredCount = 0;
+            questions.forEach((_, index) => {
+                if (document.querySelector(`input[name="question-${index}"]:checked`)) {
+                    answeredCount++;
+                }
+            });
+
+            if (answeredCount === questions.length) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+        
+        // Fungsi untuk mengkonversi nilai MathJax dan menampilkan hasil
+        async function displayResults() {
+            let score = 0;
+            let discussionHtml = '';
+
+            questions.forEach((q, qIndex) => {
+                const selectedOption = document.querySelector(`input[name="question-${qIndex}"]:checked`);
+                const questionCard = document.getElementById(`q-${qIndex}`);
+                let isCorrect = false;
+
+                if (selectedOption) {
+                    const selectedIndex = parseInt(selectedOption.value);
+                    if (selectedIndex === q.correctAnswerIndex) {
+                        score++;
+                        isCorrect = true;
+                    }
+
+                    // Highlight jawaban
+                    const allOptions = questionCard.querySelectorAll('.option-label');
+                    allOptions.forEach((label, oIndex) => {
+                        if (oIndex === q.correctAnswerIndex) {
+                            label.style.backgroundColor = 'var(--correct-color)'; // Hijau muda untuk jawaban benar
+                            label.style.fontWeight = 'bold';
+                        }
+                        if (oIndex === selectedIndex && !isCorrect) {
+                            label.style.backgroundColor = 'var(--wrong-color)'; // Merah muda untuk jawaban salah
+                        }
+                    });
+
+                    // Matikan input setelah submit
+                    questionCard.querySelectorAll('input[type="radio"]').forEach(input => input.disabled = true);
+                }
+
+                // Siapkan pembahasan
+                const correctAnswerLetter = String.fromCharCode(65 + q.correctAnswerIndex);
+                const correctAnswerText = q.options[q.correctAnswerIndex];
+
+                discussionHtml += `
+                    <div class="discussion-item">
+                        <h3>Soal ${qIndex + 1}</h3>
+                        <p><strong>Jawaban Benar:</strong> (${correctAnswerLetter}) ${correctAnswerText}</p>
+                        <p><strong>Pembahasan:</strong></p>
+                        <p class="pembahasan">${q.rationale}</p>
+                    </div>
+                `;
+            });
+
+            // Tampilkan skor dan pembahasan
+            const totalQuestions = questions.length;
+            scoreOutput.textContent = `Skor Akhir Anda: ${score}/${totalQuestions}`;
+            discussionOutput.innerHTML = discussionHtml;
+            resultsDiv.style.display = 'block';
+
+            // Pastikan MathJax merender pembahasan yang baru dimasukkan
+            if (window.MathJax) {
+                // Mengubah panggilan MathJax.typesetPromise() untuk secara eksplisit
+                // meneruskan elemen dalam array untuk mencegah error 'Object is not iterable'.
+                await MathJax.typesetPromise([discussionOutput]);
+            }
+
+            // Ganti tombol dan matikan permanen
+            submitButton.textContent = 'Refleksi Selesai';
+            submitButton.disabled = true;
+            submitButton.style.backgroundColor = '#6c757d'; // Abu-abu setelah selesai
+            submitButton.style.boxShadow = 'none';
+            
+            // Gulir ke hasil
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+
+        // Event listener untuk tombol submit
+        submitButton.addEventListener('click', displayResults);
+
+        // Inisialisasi Refleksi saat halaman dimuat
+        renderQuiz();
+    </script>
+
+</body>
+</html>
