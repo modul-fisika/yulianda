@@ -3,29 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Refleksi Fisika: Tegangan Permukaan</title>
+    <title>Refleksi Fisika: Viskositas</title>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
-        /* CSS Styling dengan Tema Biru Muda */
+        /* CSS Styling dengan Tema Hijau */
         mjx-container[jax="CHTML"][display="true"] {
             display: contents !important;
             text-align: justify !important;
         }
 
         :root {
-            --primary-color: #007bff; /* Biru Utama */
-            --light-blue: #e6f3ff; /* Biru Muda untuk background */
-            --dark-blue: #0056b3; /* Biru Tua untuk hover */
+            --primary-color: #28a745; /* Hijau Utama */
+            --light-green: #e9f7ee; /* Hijau Muda untuk background */
+            --dark-green: #1e7e34; /* Hijau Tua untuk hover */
             --text-color: #333;
-            --border-color: #b8daff;
-            --correct-color: #d1ecf1; /* Aqua muda */
-            --wrong-color: #f8d7da; /* Merah muda */
+            --border-color: #c3e6cb;
+            --correct-color: #d4edda;
+            --wrong-color: #f8d7da;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--light-blue);
+            background-color: var(--light-green);
             color: var(--text-color);
             margin: 0;
             padding: 20px;
@@ -52,7 +52,7 @@
             text-align: center;
             font-size: 1.2em;
             font-style: italic;
-            color: var(--dark-blue);
+            color: var(--dark-green);
             margin-bottom: 30px;
             padding: 10px;
             border: 1px dashed var(--primary-color);
@@ -84,7 +84,7 @@
         }
 
         .option-label:hover {
-            background-color: #e0f0ff;
+            background-color: #e0f0e3;
         }
 
         input[type="radio"] {
@@ -105,7 +105,7 @@
             cursor: pointer;
             transition: background-color 0.3s, opacity 0.3s, box-shadow 0.3s;
             margin-top: 30px;
-            box-shadow: 0 4px 6px rgba(0, 123, 255, 0.4);
+            box-shadow: 0 4px 6px rgba(40, 167, 69, 0.4);
         }
 
         #submit-btn:disabled {
@@ -116,8 +116,8 @@
         }
 
         #submit-btn:not(:disabled):hover {
-            background-color: var(--dark-blue);
-            box-shadow: 0 6px 8px rgba(0, 86, 179, 0.5);
+            background-color: var(--dark-green);
+            box-shadow: 0 6px 8px rgba(30, 126, 52, 0.5);
         }
 
         #results {
@@ -129,11 +129,11 @@
         #score-output {
             font-size: 26px;
             font-weight: bold;
-            color: var(--dark-blue);
+            color: var(--dark-green);
             text-align: center;
             margin-bottom: 25px;
             padding: 15px;
-            background-color: var(--light-blue);
+            background-color: var(--light-green);
             border-radius: 8px;
         }
 
@@ -141,12 +141,12 @@
             margin-bottom: 30px;
             padding: 15px;
             border-left: 5px solid var(--primary-color);
-            background-color: #f0f8ff;
+            background-color: #f0fff0;
             border-radius: 6px;
         }
 
         .discussion-item h3 {
-            color: var(--dark-blue);
+            color: var(--dark-green);
             margin-top: 0;
             font-size: 1.25em;
         }
@@ -177,7 +177,7 @@
         <button id="submit-btn" disabled>Kirim Jawaban dan Lihat Skor</button>
 
         <div id="results" style="display: none;">
-            <h2>Hasil Refleksi</h2>
+            <h2>Hasil Kuis</h2>
             <div id="score-output"></div>
             <h3>Pembahasan Setiap Soal</h3>
             <div id="discussion-output"></div>
@@ -185,38 +185,68 @@
     </div>
 
     <script>
-        // Array Soal Refleksi - Tegangan Permukaan
+        // Array Soal Kuis - Viskositas
         const questions = [
             {
-                question: "",
-                options: [],
-                correctAnswerIndex: 0, // A
-                rationale: ""
+                question: "1. Fitri sedang menyiapkan minuman untuk keluarganya di rumah. Ia menuangkan air dan madu dari dua botol berbeda secara bersamaan ke dalam gelas. Ia memperhatikan bahwa air mengalir jauh lebih cepat daripada madu. Berdasarkan pengamatan dan perhitungan sederhana ini, manakah pernyataan yang paling tepat terkait viskositas?",
+                options: [
+                    "Air memiliki viskositas lebih besar daripada madu, sehingga alirannya lebih cepat.",
+                    "Madu memiliki viskositas lebih besar daripada air, sehingga alirannya lebih lambat.",
+                    "Air dan madu memiliki viskositas sama, tetapi berbeda karena suhu.",
+                    "Cairan yang lebih cepat mengalir selalu memiliki viskositas lebih besar.",
+                    "Waktu aliran cairan tidak berhubungan dengan viskositas."
+                ],
+                correctAnswerIndex: 1, // B
+                rationale: "Viskositas adalah ukuran kekentalan atau hambatan internal suatu cairan terhadap aliran. Cairan dengan viskositas tinggi (kental) mengalir lebih lambat, dan sebaliknya."
             },
             {
-                question: "",
-                options: [],
+                question: "2. Tetesan air hujan yang jatuh dari langit berbentuk bulat dan berasal dari air murni dengan massa jenis $$\\rho = 1000 \\text{ kg/m}^3$$. Air hujan tersebut jatuh ke tanah akibat pengaruh gravitasi sebesar $$g = 9.8 \\text{ m/s}^2$$. Jika kerapatan udara saat hujan berlangsung adalah $$\\sigma = 1.29 \\text{ kg/m}^3$$ dan diameter tetesan hujan $$d = 0.4 \\text{ mm}$$, berapakah kecepatan jatuhnya tetesan hujan tersebut? (Anggap koefisien viskositas udara $$\\eta = 1.8 \\times 10^{-5} \\text{ Pa}\\cdot\\text{s}$$)",
+                options: [
+                    "$$4.8 \\text{ m/s}$$",
+                    "$$2.4 \\text{ m/s}$$",
+                    "$$2 \\text{ m/s}$$",
+                    "$$0.24 \\text{ m/s}$$",
+                    "$$0.48 \\text{ m/s}$$"
+                ],
                 correctAnswerIndex: 0, // A
-                rationale: ""
+                rationale: "Kecepatan terminal ($$v_t$$) dihitung menggunakan Hukum Stokes yang diperluas: $$v_t = \\frac{2 r^2 g (\\rho - \\sigma)}{9 \\eta}$$. Dengan $r = 0.0002 \\text{ m}$$, didapatkan $v_t \\approx 4.8 \\text{ m/s}$$. "
             },
             {
-                question: "",
-                options: [],
-                correctAnswerIndex: 0, // A
-                rationale: ""
+                question: "3. Sebuah pabrik tempe membuang limbah cair ke sungai di sekitarnya yang mengandung zat tertentu yang dapat memengaruhi viskositas air sungai. Semakin tinggi konsentrasinya, semakin besar pula pengaruhnya terhadap kekentalan air. Hal ini dapat menurunkan kualitas air dan membahayakan keberlangsungan ekosistem sungai. Pernyataan manakah yang **tidak sesuai** dengan konsep viskositas aliran sungai tersebut?",
+                options: [
+                    "Limpasan limbah meningkatkan viskositas air sehingga aliran menjadi lebih lambat.",
+                    "Viskositas air sungai tidak terpengaruh bahan kimia dalam limbah cair.",
+                    "Pencemaran limbah menyebabkan penurunan kualitas air serta kesehatan ekosistem sungai.",
+                    "Kenaikan viskositas air sungai dapat mempengaruhi proses oksidasi dan distribusi oksigen.",
+                    "Tingginya viskositas air dapat menghambat pergerakan mikroorganisme di dalam sungai."
+                ],
+                correctAnswerIndex: 1, // B
+                rationale: "Pernyataan B salah, karena viskositas air memang sangat dipengaruhi oleh bahan kimia dalam limbah cair, yang dapat mengubah kekentalan air dan menyebabkan masalah ekosistem seperti yang dijelaskan dalam soal."
             },
             {
-                question: "",
-                options: [],
-                correctAnswerIndex: 0, // A
-                rationale: ""
+                question: "4. Sebuah bola kecil berdiameter $$d = 4 \\text{ mm}$$ dijatuhkan ke dalam tabung berisi minyak dengan koefisien viskositas $$\\eta = 0.5 \\text{ Pa}\\cdot\\text{s}$$. Bola tersebut bergerak dengan kecepatan terminal $$v_t = 0.12 \\text{ m/s}$$. Massa jenis bola $$\\rho_s = 7800 \\text{ kg/m}^3$$ dan massa jenis minyak $$\\rho_f = 900 \\text{ kg/m}^3$$. Hitung gaya gesekan Stokes ($$F_{\\text{Stokes}}$$) yang dialami bola saat bergerak di dalam minyak!",
+                options: [
+                    "$$9.42 \\times 10^{-4} \\text{ N}$$",
+                    "$$4.71 \\times 10^{-4} \\text{ N}$$",
+                    "$$3.00 \\times 10^{-3} \\text{ N}$$",
+                    "$$2.26 \\times 10^{-3} \\text{ N}$$",
+                    "$$1.20 \\times 10^{-3} \\text{ N}$$"
+                ],
+                correctAnswerIndex: 3, // D
+                rationale: "Gaya gesekan Stokes dihitung menggunakan rumus $$\\mathbf{F_{\\text{Stokes}} = 6 \\pi \\eta r v}$$. Dengan $r = 0.002 \\text{ m}$$, $$\\eta = 0.5 \\text{ Pa}\\cdot\\text{s}$$, dan $$v = 0.12 \\text{ m/s}$$, maka $$F_{\\text{Stokes}} \\approx 2.26 \\times 10^{-3} \\text{ N}$$."
             },
             {
-                question: "",
-                options: [],
-                correctAnswerIndex: 0, // A
-                rationale: ""
-            },
+                question: "5. Sebuah bola kecil berdiameter $$d = 6 \\text{ mm}$$ dijatuhkan ke dalam cairan gliserin dengan koefisien viskositas $$\\eta = 0.8 \\text{ Pa}\\cdot\\text{s}$$. Massa jenis bola $$\\rho_s = 8900 \\text{ kg/m}^3$$ dan massa jenis gliserin $$\\rho_f = 1260 \\text{ kg/m}^3$$. Jika pada kecepatan terminal berlaku keseimbangan antara gaya Stokes dan gaya berat dikurangi gaya Archimedes, maka berapakah besar kecepatan terminal $v_t$ yang sesuai kondisi Stokes? (Gunakan $$g = 9.8 \\text{ m/s}^2$$).",
+                options: [
+                    "$$0.04 \\text{ m/s}$$",
+                    "$$0.08 \\text{ m/s}$$",
+                    "$$0.15 \\text{ m/s}$$",
+                    "$$0.20 \\text{ m/s}$$",
+                    "$$0.30 \\text{ m/s}$$"
+                ],
+                correctAnswerIndex: 3, // D
+                rationale: "Kecepatan terminal dihitung dengan rumus $$\\mathbf{v_t = \\frac{2 r^2 g (\\rho_s - \\rho_f)}{9 \\eta}}$$. Dengan memasukkan nilai yang diberikan dan $r = 0.003 \\text{ m}$$, diperoleh $$v_t \\approx 0.188 \\text{ m/s}$$, yang paling mendekati opsi $$0.20 \\text{ m/s}$$. "
+            }
         ];
 
         const form = document.getElementById('quiz-form');
@@ -325,7 +355,7 @@
             }
 
             // Ganti tombol dan matikan permanen
-            submitButton.textContent = 'Refleksi Selesai';
+            submitButton.textContent = 'Kuis Selesai';
             submitButton.disabled = true;
             submitButton.style.backgroundColor = '#6c757d'; // Abu-abu setelah selesai
             submitButton.style.boxShadow = 'none';
@@ -341,9 +371,10 @@
         // Fungsi global untuk diakses dari onchange
         window.checkCompletion = checkCompletion;
 
-        // Inisialisasi Refleksi saat halaman dimuat
+        // Inisialisasi kuis saat halaman dimuat
         renderQuiz();
     </script>
 
 </body>
 </html>
+
